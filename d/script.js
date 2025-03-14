@@ -1,38 +1,3 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const servicesContainer = document.getElementById("services");
-    const searchInput = document.getElementById("search");
-    const modalsContainer = document.getElementById("modals");
-
-    let servicesData = [];
-    let modalsData = [];
-
-    Promise.all([
-        fetch('data.json')
-            .then(response => response.json())
-            .then(services => {
-                servicesData = services;
-                renderServices(services);
-            })
-            .catch(error => console.error('Ошибка загрузки данных услуг:', error)),
-
-        fetch('modals.json')
-            .then(response => response.json())
-            .then(modals => {
-                modalsData = modals;
-                renderModals(modals);
-            })
-            .catch(error => console.error('Ошибка загрузки данных модальных окон:', error))
-    ]);
-
-    searchInput.addEventListener("input", function() {
-        const filteredServices = servicesData.filter(service => 
-            service.title.toLowerCase().includes(this.value.toLowerCase()) ||
-            service.description.toLowerCase().includes(this.value.toLowerCase())
-        );
-        renderServices(filteredServices);
-    });
-});
-
 function renderServices(services) {
     const servicesContainer = document.getElementById("services");
     servicesContainer.innerHTML = "";
@@ -44,3 +9,45 @@ function renderServices(services) {
         serviceCard.innerHTML = `
             <div class="card__poster" style="background-image: url(${service.image});"></div>
             <div class="card__databox">
+                <h2 class="card-databox__heading">${service.title}</h2>
+                <p class="card-databox__description">${service.description}</p>
+                <button class="card-databox__read-more-btn" onclick="openModal(${service.id})">Подробнее</button>
+            </div>
+        `;
+
+        servicesContainer.appendChild(serviceCard);
+    });
+}
+
+function renderModals(modals) {
+    const modalsContainer = document.getElementById("modals");
+    modalsContainer.innerHTML = "";
+
+    modals.forEach(modal => {
+        const modalElement = document.createElement("div");
+        modalElement.classList.add("modal");
+        modalElement.setAttribute("id", `modal-${modal.id}`);
+
+        modalElement.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close" onclick="closeModal(${modal.id})">&times;</span>
+                    <h2>${modal.title}</h2>
+                </div>
+                <div class="modal-body">
+                    <p>${modal.modalContent}</p>
+                </div>
+            </div>
+        `;
+
+        modalsContainer.appendChild(modalElement);
+    });
+}
+
+function openModal(id) {
+    document.getElementById(`modal-${id}`).style.display = "block";
+}
+
+function closeModal(id) {
+    document.getElementById(`modal-${id}`).style.display = "none";
+}
