@@ -19,7 +19,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 servicesContainer.appendChild(serviceCard);
             });
-        });
+        })
+        .catch(error => console.error('Ошибка загрузки данных:', error));
 });
 
 function openModal(id) {
