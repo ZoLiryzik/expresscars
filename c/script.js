@@ -1,6 +1,13 @@
 function renderServices(services) {
     const servicesContainer = document.getElementById("services");
-    servicesContainer.innerHTML = "";
+    servicesContainer.innerHTML = `
+            <div class="card__poster" style="background-image: url(${service.image});"></div>
+            <div class="card__databox">
+                <h2 class="card-databox__heading">${service.title}</h2>
+                <p class="card-databox__description">${service.description}</p>
+                <button class="card-databox__read-more-btn" onclick="openModal(${service.id})">Подробнее</button>
+            </div>
+        `;
 
     services.forEach(service => {
         const serviceCard = document.createElement("div");
